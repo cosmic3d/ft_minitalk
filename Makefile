@@ -1,5 +1,5 @@
 # -=-=-=-=-	NAME -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
-
+NAME			= minitalk
 SERVER		= server
 CLIENT		= client
 MK			= Makefile
@@ -32,7 +32,7 @@ AR			= ar -rcs
 RM			= rm -f
 MKDIR		= mkdir -p
 CP			= cp -f
-
+MAKE		= make -s
 # -=-=-=-=-	LIBS/HEADERS -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 
 LIBS		+= $(LIB_DIR)libft.a
@@ -42,48 +42,61 @@ INCLUDE		= -I $(LIBS_HDRS)
 
 # -=-=-=-=-	SOURCES -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 
-SRCS_SERVER		= server.c
-SRCS_CLIENT		= 
+SRCS_SERVER		:= server.c utils.c
+SRCS_CLIENT		:= client.c utils.c
 
 # -=-=-=-=-	OBJECTS/DEPENDENCIES -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 
-OBJS_SERVER		= $(addprefix $(OBJ_DIR), $(SRCS_SERVER:.c=.o))
-OBJS_CLIENT		= $(addprefix $(OBJ_DIR), $(SRCS_CLIENT:.c=.o))
+OBJS_SERVER		:= $(addprefix $(OBJ_DIR), $(SRCS_SERVER:.c=.o))
+OBJS_CLIENT		:= $(addprefix $(OBJ_DIR), $(SRCS_CLIENT:.c=.o))
 DEP			+= $(addsuffix .d, $(basename $(OBJS_SERVER)))
 DEP			+= $(addsuffix .d, $(basename $(OBJS_CLIENT)))
 
-$(OBJ_DIR)%.o: $(SRC_DIR)%.c $(MK)
-	@$(MKDIR) $(dir $@)
-	@echo "$(YELLOW)Compiling: $<$(RESET)"
-	@$(CC) -MT $@ -MMD -MP $(CFLAGS) -c $< -o $@
-
 # -=-=-=-=-	MAKING LIBS AND COMPILING WITH THEM -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 
-all: make_libs $(NAME)
+all: $(NAME) make_libs
 
 make_libs:
 	@$(MAKE) -sC $(LIB_DIR)
 	@$(MAKE) -sC $(PRINTF_DIR)
 
-$(NAME): $(OBJS) $(LIBS)
-	@$(CC) $(CFLAGS) $(OBJS) $(LIBS) -o $(NAME)
-	@echo "$(GREEN)🧩MINITALK COMPILED🧩$(RESET)"
+$(NAME): make_libs
+	@$(MAKE) $(SERVER)
+	@$(MAKE) $(CLIENT)
 
+$(SERVER):: $(OBJS_SERVER)
+	@$(CC) $(CFLAGS) $(OBJS_SERVER) $(LIBS) -o $(SERVER)
+	@echo "$(GREEN)🧩SERVER COMPILED🧩$(RESET)"
+
+$(SERVER)::
+	@echo "$(BLUE)Nothing to be done for $@$(RESET)"
+
+$(CLIENT):: $(OBJS_CLIENT)
+	@$(CC) $(CFLAGS) $(OBJS_CLIENT) $(LIBS) -o $(CLIENT)
+	@echo "$(GREEN)🧩CLIENT COMPILED🧩$(RESET)"
+
+$(CLIENT)::
+	@echo "$(BLUE)Nothing to be done for $@$(RESET)"
+	
 clean:
 	@$(RM) -r $(OBJ_DIR)
 	@make clean -sC $(LIB_DIR)
 	@make clean -sC $(PRINTF_DIR)
-	@make clean -sC $(LBX_DIR)
 	@echo "$(CYAN)Dependencies and objects removed$(RESET)"
 
 fclean:	clean
-	@$(RM) $(NAME)
+	@$(RM) $(SERVER) $(CLIENT)
 	@make fclean -sC $(LIB_DIR)
 	@make fclean -sC $(PRINTF_DIR)
-	@echo "$(RED)$(NAME) Removed$(RESET)"
+	@echo "$(RED)$(SERVER) and $(CLIENT) succesfully removed$(RESET)"
 
 re: fclean all
 
 -include $(DEP)
+
+$(OBJ_DIR)%.o: $(SRC_DIR)%.c $(MK)
+	@$(MKDIR) $(dir $@)
+	@echo "$(YELLOW)Compiling: $<$(RESET)"
+	@$(CC) -MT $@ -MMD -MP $(CFLAGS) -c $< -o $@
 
 .PHONY:	all clean fclean re make_libs bonus
