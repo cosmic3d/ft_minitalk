@@ -1,0 +1,1 @@
+gcc  src/server.c src/utils.c lib/ft_libft/*.c lib/ft_printf/src/*.c -o server
