@@ -23,6 +23,8 @@ int	f_exit(char *err_message)
 void	unused(void *unused)
 {
 	unused = NULL;
+	if (!unused)
+		return ;
 	return ;
 }
 

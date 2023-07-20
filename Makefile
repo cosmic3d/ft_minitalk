@@ -38,7 +38,7 @@ MAKE		= make -s
 LIBS		+= $(LIB_DIR)libft.a
 LIBS		+= $(PRINTF_DIR)libftprintf.a
 LIBS_HDRS	+= $(INC_DIR)minitalk.h
-INCLUDE		= -I $(LIBS_HDRS)
+INCLUDE		= -I $(LIBS_HDRS) -I $(LIB_DIR)
 
 # -=-=-=-=-	SOURCES -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- #
 

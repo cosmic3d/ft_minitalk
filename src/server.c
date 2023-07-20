@@ -46,4 +46,6 @@ void	signal_handler(int signal, siginfo_t *info, void *context)
 	ft_printf("Se recibió la señal: %d\n", signal);
 	unused(context);
 	info = NULL;
+	if (info)
+		return ;
 }
