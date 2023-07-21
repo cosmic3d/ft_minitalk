@@ -42,10 +42,21 @@ void	init_server(void)
 
 void	signal_handler(int signal, siginfo_t *info, void *context)
 {
-	g_bitcount++;
+	int	len = 0;
+
+	//printf("Len of the string is: %d\n", len);
+	if (g_bitcount < 32)
+	{
+		len |= (signal & 1) << (31 - g_bitcount);
+		g_bitcount++;
+		return ;
+	}
 	ft_printf("Se recibió la señal: %d\n", signal);
+	ft_printf("Len of the string is: %d\n", len);
 	unused(context);
 	info = NULL;
 	if (info)
 		return ;
+	return ;
+	g_bitcount++;
 }
