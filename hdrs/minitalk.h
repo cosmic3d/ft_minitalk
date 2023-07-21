@@ -30,6 +30,7 @@ void	send_bit(int pid, int bit);
 //SERVER
 void	signal_handler(int signal, siginfo_t *info, void *context);
 void	init_server(void);
+void	signal2bin(int *signal);
 //BOTH
 int		f_exit(char *err_message);
 void	unused(void *unused);
