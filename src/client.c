@@ -15,13 +15,19 @@
 int	main(int argc, char **argv)
 {
 	int	pid;
+	int	i;
+	int	str_len;
 
 	if (argc != 3)
 		f_exit("Argument count is incorrect");
 	if (!check_pid(argv[1]))
 		f_exit("Process id is incorrect");
 	pid = ft_atoi(argv[1]);
-	send_length(pid, strlen(argv[2]));
+	str_len = strlen(argv[2]);
+	send_info(pid, str_len, 32);
+	i = -1;
+	while (++i < str_len)
+		send_info(pid, argv[2][i], 8);
 	return (0);
 }
 
@@ -42,11 +48,11 @@ void	send_bit(int pid, int bit)
 	return ;
 }
 
-void	send_length(int pid, int len)
+void	send_info(int pid, int data, int bits)
 {
 	int	i;
 
 	i = -1;
-	while (++i < 32)
-		send_bit(pid, len >> i & 1);
+	while (++i < bits)
+		send_bit(pid, data >> i & 1);
 }

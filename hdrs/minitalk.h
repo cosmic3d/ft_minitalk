@@ -25,12 +25,13 @@
 /* --------------------------------- FUNCS -------------------------------- */
 
 //CLIENT
-void	send_length(int pid, int len);
+void	send_info(int pid, int data, int bits);
 void	send_bit(int pid, int bit);
 //SERVER
 void	signal_handler(int signal, siginfo_t *info, void *context);
 void	init_server(void);
 void	signal2bin(int *signal);
+int		reconstruct_string(char *str, int c, int signal);
 //BOTH
 int		f_exit(char *err_message);
 void	unused(void *unused);

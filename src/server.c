@@ -14,26 +14,6 @@
 
 int	g_bitcount;
 
-void imprimirBinario(unsigned int numero) {
-    int bits = sizeof(unsigned int) * 8; // Número de bits en un unsigned int
-
-    // Recorre cada bit desde el más significativo hasta el menos significativo
-    for (int i = bits - 1; i >= 0; i--) {
-        // Verifica si el bit en la posición i es 1 o 0
-        if ((numero >> i) & 1) {
-            putchar('1');
-        } else {
-            putchar('0');
-        }
-
-        // Agrupa los bits en grupos de 4 para facilitar la lectura
-        if (i % 4 == 0) {
-            putchar(' ');
-        }
-    }
-    putchar('\n');
-}
-
 int	main(void)
 {
 	struct sigaction	sa;
@@ -62,30 +42,57 @@ void	init_server(void)
 
 void	signal_handler(int signal, siginfo_t *info, void *context)
 {
-	static unsigned int	len = 0;
-	static char			*str;
+	static int	len = 0;
+	static int	c = 0;
+	static char	*str;
 
+	unused(context);
 	signal2bin(&signal);
 	if (g_bitcount < 32)
 	{
 		len |= (signal & 1) << g_bitcount;
-		imprimirBinario(len);
 		g_bitcount++;
 		if (g_bitcount < 32)
 			return ;
-		ft_bzero(str, sizeof(char) * (len + 1));
+		ft_printf("Len is: %d\n", len);
+		str = (char *)malloc(sizeof(char) * (len + 1));
+		ft_bzero(str, len + 1);
+		return ;
 	}
-	unused(context);
+	c = reconstruct_string(str, c, signal);
+	if (c == len)
+	{
+		//send_length(info->si_pid, g_bitcount);
+		ft_printf("-> %s\n", str);
+		ft_printf("Bits: %d\n", g_bitcount);
+		free(str);
+		g_bitcount = 0;
+		len = 0;
+		c = 0;
+	}
 	info = NULL;
 	if (info)
 		return ;
-	return ;
+}
+
+int	reconstruct_string(char *str, int c, int signal)
+{
+	static unsigned int	bit = 0;
+
+	str[c] |= (signal & 1) << bit;
+	bit++;
 	g_bitcount++;
+	if (bit == 8)
+	{
+		bit = 0;
+		return (c + 1);
+	}
+	return (c);
 }
 
 void	signal2bin(int *signal)
 {
-	if (*signal == 10)
+	if (*signal == SIGUSR1)
 		*signal = 0;
 	else
 		*signal = 1;

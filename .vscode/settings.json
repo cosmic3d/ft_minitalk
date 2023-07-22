@@ -1,0 +1,8 @@
+{
+	"files.associations": {
+		"*.js": "javascriptreact",
+		"*.hbs": "handlebars",
+		"*.c": "c",
+		"signal.h": "c"
+	}
+}
