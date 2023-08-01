@@ -6,7 +6,7 @@
 /*   By: jenavarr <jenavarr@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/18 17:51:39 by jenavarr          #+#    #+#             */
-/*   Updated: 2023/07/18 18:29:11 by jenavarr         ###   ########.fr       */
+/*   Updated: 2023/08/01 18:03:09 by jenavarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ void	unused(void *unused)
 int	check_pid(char *str)
 {
 	int	j;
+	int	sign;
 
 	j = 0;
 	if (!str[j])
@@ -41,20 +42,13 @@ int	check_pid(char *str)
 			return (0);
 		j++;
 	}
-	return (check_int(str));
-}
-
-int	check_int(char *s)
-{
-	int	sign;
-
 	sign = 0;
-	if (s[0] == '-' || s[0] == '+')
+	if (str[0] == '-' || str[0] == '+')
 		sign = 1;
-	if (ft_strlen(s) - sign > 10)
+	if (ft_strlen(str) - sign > 10)
 		return (0);
-	if (ft_strlen(s) - sign == 10)
-		if (!check_limits_when_10(s, sign))
+	if (ft_strlen(str) - sign == 10)
+		if (!check_limits_when_10(str, sign))
 			return (0);
 	return (1);
 }
@@ -77,4 +71,13 @@ int	check_limits_when_10(char *str, int sign)
 	if (ft_strncmp(str, "2147483647", 10) > 0)
 		return (0);
 	return (1);
+}
+
+void	signal2bin(int *signal)
+{
+	if (*signal == SIGUSR1)
+		*signal = 0;
+	else
+		*signal = 1;
+	return ;
 }

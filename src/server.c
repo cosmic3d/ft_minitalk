@@ -6,7 +6,7 @@
 /*   By: jenavarr <jenavarr@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/18 16:27:56 by jenavarr          #+#    #+#             */
-/*   Updated: 2023/07/18 19:40:45 by jenavarr         ###   ########.fr       */
+/*   Updated: 2023/08/01 18:52:04 by jenavarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,25 +54,23 @@ void	signal_handler(int signal, siginfo_t *info, void *context)
 		g_bitcount++;
 		if (g_bitcount < 32)
 			return ;
-		ft_printf("Len is: %d\n", len);
 		str = (char *)malloc(sizeof(char) * (len + 1));
 		ft_bzero(str, len + 1);
+		if (!len)
+		{
+			message_ended(str, info);
+			len = 0;
+			c = 0;
+		}
 		return ;
 	}
 	c = reconstruct_string(str, c, signal);
 	if (c == len)
 	{
-		//send_length(info->si_pid, g_bitcount);
-		ft_printf("-> %s\n", str);
-		ft_printf("Bits: %d\n", g_bitcount);
-		free(str);
-		g_bitcount = 0;
+		message_ended(str, info);
 		len = 0;
 		c = 0;
 	}
-	info = NULL;
-	if (info)
-		return ;
 }
 
 int	reconstruct_string(char *str, int c, int signal)
@@ -90,11 +88,11 @@ int	reconstruct_string(char *str, int c, int signal)
 	return (c);
 }
 
-void	signal2bin(int *signal)
+void	message_ended(char *str, siginfo_t *info)
 {
-	if (*signal == SIGUSR1)
-		*signal = 0;
-	else
-		*signal = 1;
-	return ;
+	ft_printf("-> %s\n", str);
+	usleep(1000);
+	kill(info->si_pid, SIGUSR2);
+	free(str);
+	g_bitcount = 0;
 }
