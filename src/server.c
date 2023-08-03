@@ -57,20 +57,12 @@ void	signal_handler(int signal, siginfo_t *info, void *context)
 		str = (char *)malloc(sizeof(char) * (len + 1));
 		ft_bzero(str, len + 1);
 		if (!len)
-		{
-			message_ended(str, info);
-			len = 0;
-			c = 0;
-		}
+			message_ended(str, info, &len, &c);
 		return ;
 	}
 	c = reconstruct_string(str, c, signal);
 	if (c == len)
-	{
-		message_ended(str, info);
-		len = 0;
-		c = 0;
-	}
+		message_ended(str, info, &len, &c);
 }
 
 int	reconstruct_string(char *str, int c, int signal)
@@ -88,11 +80,13 @@ int	reconstruct_string(char *str, int c, int signal)
 	return (c);
 }
 
-void	message_ended(char *str, siginfo_t *info)
+void	message_ended(char *str, siginfo_t *info, int *len, int *c)
 {
 	ft_printf("-> %s\n", str);
 	usleep(1000);
 	kill(info->si_pid, SIGUSR2);
 	free(str);
 	g_bitcount = 0;
+	*len = 0;
+	*c = 0;
 }

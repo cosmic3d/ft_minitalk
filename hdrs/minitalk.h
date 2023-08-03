@@ -32,7 +32,7 @@ void	message_sended(int signal, siginfo_t *info, void *context);
 void	signal_handler(int signal, siginfo_t *info, void *context);
 void	init_server(void);
 int		reconstruct_string(char *str, int c, int signal);
-void	message_ended(char *str, siginfo_t *info);
+void	message_ended(char *str, siginfo_t *info, int *len, int *c);
 //BOTH
 int		f_exit(char *err_message);
 void	unused(void *unused);
