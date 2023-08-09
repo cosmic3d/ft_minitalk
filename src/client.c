@@ -14,9 +14,9 @@
 
 int	main(int argc, char **argv)
 {
-	int	pid;
-	int	i;
-	int	str_len;
+	int					pid;
+	int					i;
+	int					str_len;
 	struct sigaction	sa;
 
 	if (argc != 3)

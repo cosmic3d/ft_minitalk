@@ -83,7 +83,7 @@ int	reconstruct_string(char *str, int c, int signal)
 void	message_ended(char *str, siginfo_t *info, int *len, int *c)
 {
 	ft_printf("-> %s\n", str);
-	usleep(1000);
+	usleep(200);
 	kill(info->si_pid, SIGUSR2);
 	free(str);
 	g_bitcount = 0;
