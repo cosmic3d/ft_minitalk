@@ -61,6 +61,10 @@ void	signal_handler(int signal, siginfo_t *info, void *context)
 		return ;
 	}
 	c = reconstruct_string(str, c, signal);
+	if (g_bitcount % 8 == 0)
+		ft_printf("Current-> %i | Objective: %i\n", c, len);
+	if (c >= len - 1)
+		ft_printf("Current bit: %i\n", g_bitcount);
 	if (c == len)
 		message_ended(str, info, &len, &c);
 }

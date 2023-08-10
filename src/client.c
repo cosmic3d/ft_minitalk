@@ -28,7 +28,10 @@ int	main(int argc, char **argv)
 	send_info(pid, str_len, 32);
 	i = -1;
 	while (++i < str_len)
+	{
 		send_info(pid, argv[2][i], 8);
+		ft_printf("Chars sended: %i\n", i + 1);
+	}
 	sa.sa_sigaction = message_sended;
 	if (sigaction(SIGUSR2, &sa, NULL) < 0)
 		f_exit("Failed when trying to establish a signal action");
@@ -49,7 +52,7 @@ void	send_bit(int pid, int bit)
 		if (kill(pid, SIGUSR2) < 0)
 			f_exit("Error");
 	}
-	usleep(200);
+	usleep(400);
 	return ;
 }
 
