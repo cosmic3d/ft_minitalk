@@ -42,31 +42,28 @@ void	init_server(void)
 
 void	signal_handler(int signal, siginfo_t *info, void *context)
 {
-	static int	len = 0;
-	static int	c = 0;
-	static char	*str;
+	static t_client	client;
 
-	unused(context);
+	if (!manage_client(&client, info, context))
+		return ;
 	signal2bin(&signal);
 	if (g_bitcount < 32)
 	{
-		len |= (signal & 1) << g_bitcount;
+		client.len |= (signal & 1) << g_bitcount;
 		g_bitcount++;
 		if (g_bitcount < 32)
 			return ;
-		str = (char *)malloc(sizeof(char) * (len + 1));
-		ft_bzero(str, len + 1);
-		if (!len)
-			message_ended(str, info, &len, &c);
+		client.str = (char *)malloc(sizeof(char) * (client.len + 1));
+		ft_bzero(client.str, client.len + 1);
+		if (!client.len)
+			message_ended(&client, info);
 		return ;
 	}
-	c = reconstruct_string(str, c, signal);
-	if (g_bitcount % 8 == 0)
-		ft_printf("Current-> %i | Objective: %i\n", c, len);
-	if (c >= len - 1)
-		ft_printf("Current bit: %i\n", g_bitcount);
-	if (c == len)
-		message_ended(str, info, &len, &c);
+	client.c = reconstruct_string(client.str, client.c, signal);
+	/* if (g_bitcount % 8 == 0)
+		ft_printf("Current-> %i | Objective: %i\n", client.c, client.len); */
+	if (client.c == client.len)
+		message_ended(&client, info);
 }
 
 int	reconstruct_string(char *str, int c, int signal)
@@ -84,13 +81,14 @@ int	reconstruct_string(char *str, int c, int signal)
 	return (c);
 }
 
-void	message_ended(char *str, siginfo_t *info, int *len, int *c)
+void	message_ended(t_client *client, siginfo_t *info)
 {
-	ft_printf("-> %s\n", str);
-	usleep(200);
+	ft_printf("-> %s\n", client->str);
+	usleep(1000);
 	kill(info->si_pid, SIGUSR2);
-	free(str);
+	free(client->str);
 	g_bitcount = 0;
-	*len = 0;
-	*c = 0;
+	client->len = 0;
+	client->c = 0;
+	client->client_pid = 0;
 }

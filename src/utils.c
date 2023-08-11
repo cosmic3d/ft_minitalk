@@ -20,12 +20,24 @@ int	f_exit(char *err_message)
 	return (0);
 }
 
-void	unused(void *unused)
+int	manage_client(t_client *client, siginfo_t *info, void *unused)
 {
+	if (info->si_pid == client->client_pid)
+		return (1);
+	if (client->client_pid != 0)
+	{
+		kill(info->si_pid, SIGUSR1);
+		return (0);
+	}
+	client->client_pid = info->si_pid;
+	client->c = 0;
+	client->len = 0;
+	client->str = NULL;
+	kill(info->si_pid, SIGUSR2);
 	unused = NULL;
 	if (!unused)
-		return ;
-	return ;
+		return (1);
+	return (1);
 }
 
 int	check_pid(char *str)

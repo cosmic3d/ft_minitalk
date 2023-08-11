@@ -23,7 +23,14 @@
 # include <signal.h>
 
 /* --------------------------------- FUNCS -------------------------------- */
-
+//STRUCTS
+typedef struct s_client
+{
+	int		len;
+	int		c;
+	char	*str;
+	int		client_pid;
+}	t_client;
 //CLIENT
 void	send_bit(int pid, int bit);
 void	send_info(int pid, int data, int bits);
@@ -32,11 +39,12 @@ void	message_sended(int signal, siginfo_t *info, void *context);
 void	signal_handler(int signal, siginfo_t *info, void *context);
 void	init_server(void);
 int		reconstruct_string(char *str, int c, int signal);
-void	message_ended(char *str, siginfo_t *info, int *len, int *c);
+void	message_ended(t_client *client, siginfo_t *info);
 //BOTH
 int		f_exit(char *err_message);
-void	unused(void *unused);
+int		manage_client(t_client *client, siginfo_t *info, void *unused);
 int		check_pid(char *str);
 int		check_limits_when_10(char *str, int sign);
 void	signal2bin(int *signal);
+
 #endif

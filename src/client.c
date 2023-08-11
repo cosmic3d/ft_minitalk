@@ -12,6 +12,8 @@
 
 #include "../hdrs/minitalk.h"
 
+int	g_bitcount;
+
 int	main(int argc, char **argv)
 {
 	int					pid;
@@ -23,20 +25,17 @@ int	main(int argc, char **argv)
 		f_exit("Argument count is incorrect");
 	if (!check_pid(argv[1]))
 		f_exit("Process id is incorrect");
+	sa.sa_sigaction = message_sended;
+	if (sigaction(SIGUSR1, &sa, NULL) < 0 || sigaction(SIGUSR2, &sa, NULL) < 0)
+		f_exit("Failed when trying to establish a signal action");
+	g_bitcount = 0;
 	pid = ft_atoi(argv[1]);
-	str_len = strlen(argv[2]);
+	str_len = ft_strlen(argv[2]);
 	send_info(pid, str_len, 32);
 	i = -1;
 	while (++i < str_len)
-	{
 		send_info(pid, argv[2][i], 8);
-		ft_printf("Chars sended: %i\n", i + 1);
-	}
-	sa.sa_sigaction = message_sended;
-	if (sigaction(SIGUSR2, &sa, NULL) < 0)
-		f_exit("Failed when trying to establish a signal action");
-	while (1)
-		pause();
+	pause();
 	return (0);
 }
 
@@ -52,6 +51,8 @@ void	send_bit(int pid, int bit)
 		if (kill(pid, SIGUSR2) < 0)
 			f_exit("Error");
 	}
+	if (g_bitcount == 0)
+		pause();
 	usleep(400);
 	return ;
 }
@@ -62,13 +63,26 @@ void	send_info(int pid, int data, int bits)
 
 	i = -1;
 	while (++i < bits)
+	{
 		send_bit(pid, data >> i & 1);
+		g_bitcount++;
+	}
 }
 
 void	message_sended(int signal, siginfo_t *info, void *context)
 {
-	unused(context);
-	unused(&signal);
-	ft_printf("%sMessage received by %i%s\n", VERDE, info->si_pid, RESET);
+	if (g_bitcount == 0)
+		return ;
+	if (signal == SIGUSR2)
+	{
+		ft_printf("%sMessage received by %i%s\n", VERDE, info->si_pid, RESET);
+		ft_printf("%sTotal bits received: %s", VERDE, RESET);
+		ft_printf("%s%i%s\n", CYAN, g_bitcount, RESET);
+		return ;
+	}
+	ft_printf("%s%i: Another client is sending a message. Try again later%s\n", AMARILLO, info->si_pid, RESET);
+	context = NULL;
+	if (!context)
+		exit(1);
 	exit(1);
 }
