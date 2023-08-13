@@ -61,7 +61,9 @@ void	signal_handler(int signal, siginfo_t *info, void *context)
 	}
 	client.c = reconstruct_string(client.str, client.c, signal);
 	/* if (g_bitcount % 8 == 0)
-		ft_printf("Current-> %i | Objective: %i\n", client.c, client.len); */
+		ft_printf("Current-> %i | Objective: %i\n", client.c, client.len);
+	if (client.c >= client.len - 1)
+		ft_printf("Bits: %i\n", g_bitcount); */
 	if (client.c == client.len)
 		message_ended(&client, info);
 }

@@ -54,6 +54,7 @@ void	send_bit(int pid, int bit)
 	if (g_bitcount == 0)
 		pause();
 	usleep(400);
+	printf("Bits sended: %i\n", g_bitcount);
 	return ;
 }
 
