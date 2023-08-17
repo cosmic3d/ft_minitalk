@@ -6,7 +6,7 @@
 /*   By: jenavarr <jenavarr@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/18 16:58:05 by jenavarr          #+#    #+#             */
-/*   Updated: 2023/08/01 18:47:45 by jenavarr         ###   ########.fr       */
+/*   Updated: 2023/08/17 19:47:24 by jenavarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,7 @@ void	send_bit(int pid, int bit)
 	}
 	if (g_bitcount == 0)
 		pause();
-	usleep(400);
-	printf("Bits sended: %i\n", g_bitcount);
+	usleep(500);
 	return ;
 }
 

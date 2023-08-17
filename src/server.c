@@ -6,7 +6,7 @@
 /*   By: jenavarr <jenavarr@student.42barcel>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/18 16:27:56 by jenavarr          #+#    #+#             */
-/*   Updated: 2023/08/01 18:52:04 by jenavarr         ###   ########.fr       */
+/*   Updated: 2023/08/17 21:08:18 by jenavarr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,10 +60,8 @@ void	signal_handler(int signal, siginfo_t *info, void *context)
 		return ;
 	}
 	client.c = reconstruct_string(client.str, client.c, signal);
-	/* if (g_bitcount % 8 == 0)
-		ft_printf("Current-> %i | Objective: %i\n", client.c, client.len);
-	if (client.c >= client.len - 1)
-		ft_printf("Bits: %i\n", g_bitcount); */
+	if (!client.str)
+			f_exit("Failed when trying to allocate the memory");
 	if (client.c == client.len)
 		message_ended(&client, info);
 }
