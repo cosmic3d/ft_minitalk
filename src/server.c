@@ -51,17 +51,21 @@ void	signal_handler(int signal, siginfo_t *info, void *context)
 	{
 		client.len |= (signal & 1) << g_bitcount;
 		g_bitcount++;
+		if (kill(info->si_pid, SIGUSR1) < 0)
+			f_exit("Error");
 		if (g_bitcount < 32)
 			return ;
 		client.str = (char *)malloc(sizeof(char) * (client.len + 1));
+		if (!client.str)
+				f_exit("Failed when trying to allocate the memory");
 		ft_bzero(client.str, client.len + 1);
 		if (!client.len)
 			message_ended(&client, info);
 		return ;
 	}
 	client.c = reconstruct_string(client.str, client.c, signal);
-	if (!client.str)
-			f_exit("Failed when trying to allocate the memory");
+	if (kill(info->si_pid, SIGUSR1) < 0)
+		f_exit("Error");
 	if (client.c == client.len)
 		message_ended(&client, info);
 }
@@ -85,7 +89,8 @@ void	message_ended(t_client *client, siginfo_t *info)
 {
 	ft_printf("-> %s\n", client->str);
 	usleep(1000);
-	kill(info->si_pid, SIGUSR2);
+	if (kill(info->si_pid, SIGUSR2) < 0)
+		f_exit("Error");
 	free(client->str);
 	g_bitcount = 0;
 	client->len = 0;

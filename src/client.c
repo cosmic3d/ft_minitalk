@@ -51,8 +51,7 @@ void	send_bit(int pid, int bit)
 		if (kill(pid, SIGUSR2) < 0)
 			f_exit("Error");
 	}
-	if (g_bitcount == 0)
-		pause();
+	pause();
 	usleep(500);
 	return ;
 }
@@ -63,26 +62,29 @@ void	send_info(int pid, int data, int bits)
 
 	i = -1;
 	while (++i < bits)
-	{
 		send_bit(pid, data >> i & 1);
-		g_bitcount++;
-	}
 }
 
 void	message_sended(int signal, siginfo_t *info, void *context)
 {
-	if (g_bitcount == 0)
-		return ;
-	if (signal == SIGUSR2)
+	if (signal == SIGUSR2 && g_bitcount > 0)
 	{
 		ft_printf("%sMessage received by %i%s\n", VERDE, info->si_pid, RESET);
 		ft_printf("%sTotal bits received: %s", VERDE, RESET);
 		ft_printf("%s%i%s\n", CYAN, g_bitcount, RESET);
 		return ;
 	}
-	ft_printf("%s%i: Another client is sending a message. Try again later%s\n", AMARILLO, info->si_pid, RESET);
-	context = NULL;
-	if (!context)
+	if (g_bitcount == 0)
+	{
+		g_bitcount++;
+		if (signal == SIGUSR2)
+			return ;
+		ft_printf("%s%i: Another client is sending a message. Try again later%s\n", AMARILLO, info->si_pid, RESET);
+		context = NULL;
+		if (!context)
+			exit(1);
 		exit(1);
-	exit(1);
+	}
+	g_bitcount++;
+	return ;
 }
